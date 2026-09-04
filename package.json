@@ -1,0 +1,14 @@
+{
+  "name": "30-days-docker-k8s",
+  "version": "1.0.0",
+  "description": "A beginner DevOps project: containerize a small app and deploy it with Docker and Kubernetes over 30 days.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "license": "MIT"
+}
