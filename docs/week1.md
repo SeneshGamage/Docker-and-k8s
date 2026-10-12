@@ -98,6 +98,8 @@ It lists files Docker should leave out of the build context, like `.gitignore` d
 - It's faster and gives the same result on every build
 - It fails if `package.json` and `package-lock.json` disagree, which catches mistakes early
 
+- (The image stayed at 140MB. Most of that size is the node:20-alpine base image, and my app only adds a few MB. npm ci and the expanded .dockerignore improved build repeatability and kept the build context tiny (2.31kB), but they don’t shrink an image that’s already small. Choosing alpine was the real size optimization)
+
 **Files I added to `.dockerignore`**
 - `.vs`: Visual Studio's local editor files
 - `.github`: CI config isn't needed inside the image
