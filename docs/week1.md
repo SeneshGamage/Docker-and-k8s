@@ -79,7 +79,7 @@ docker rm app-test                                        # delete the stopped c
 | | Size |
 |---|---|
 | Before changes | 140MB |
-| After changes | _fill in from `docker images 30-days-app`_ |
+| After changes | 140MB |
 
 ### What I learned
 

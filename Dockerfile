@@ -7,7 +7,8 @@ WORKDIR /app
 
 # Copy only package files first so Docker can cache the npm install layer
 COPY package*.json ./
-RUN npm install --omit=dev
+# RUN npm install --omit=dev
+RUN npm ci --omit=dev
 
 # Copy the rest of the app
 COPY . .
