@@ -109,7 +109,16 @@ It lists files Docker should leave out of the build context, like `.gitignore` d
 
 ## Day 4: Push the image to Docker Hub
 
-_To be filled in._
+- Created a Docker Hub account and a Read & Write access token
+- Logged in with `docker login`, using the token instead of my password
+- Tagged the image as `donlenasenesh/30-days-app:latest`
+- Pushed it with `docker push` and verified it by pulling it fresh
+
+What I learned:
+- A **registry** (Docker Hub) stores images so they can be shared and pulled anywhere
+- An image name has the form `donlenasenesh/repo:tag`; the tag is usually a version, and `latest` is the default
+- `docker tag` doesn't copy the image, it adds another name to the same one
+- Only new layers are uploaded, because shared layers already exist on the registry
 
 ## Day 5: Environment variables
 

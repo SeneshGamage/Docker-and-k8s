@@ -31,6 +31,16 @@ docker build -t 30-days-app .
 docker run -p 3000:3000 30-days-app
 ```
 
+## Docker Hub
+The image is published at `donlenasenesh/30-days-app`.
+
+Pull and run it:
+
+```bash
+docker pull YOUR_DOCKERHUB_USERNAME/30-days-app:latest
+docker run -p 3000:3000 YOUR_DOCKERHUB_USERNAME/30-days-app:latest
+```
+
 ## Progress log
 See `docs/week1.md`, `docs/week2.md`, `docs/week3.md`, `docs/week4.md` as they
 get filled in throughout the month, plus `docs/retrospective.md` at the end.
