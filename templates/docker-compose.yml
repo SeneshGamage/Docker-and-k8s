@@ -1,0 +1,35 @@
+# --- Week 2 template: move this to the repo root on Day 9 ---
+# Run with: docker compose up --build
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/appdb
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=appdb
+    ports:
+      - "5432:5432"
+    # Day 10: persistent volume so data survives container restarts
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  # Day 11 (optional): add a cache layer
+  # redis:
+  #   image: redis:7-alpine
+  #   ports:
+  #     - "6379:6379"
+
+volumes:
+  db_data:

@@ -1,0 +1,8 @@
+# --- Day 18 template: move to k8s/configmap.yaml ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  PORT: "3000"
+  NODE_ENV: "production"

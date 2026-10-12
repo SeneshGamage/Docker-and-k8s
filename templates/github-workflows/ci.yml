@@ -1,0 +1,50 @@
+# --- Day 25/26 template: move to .github/workflows/ci.yml ---
+# Before this works, add two repo secrets in GitHub:
+# Settings -> Secrets and variables -> Actions:
+#   DOCKERHUB_USERNAME
+#   DOCKERHUB_TOKEN  (create at hub.docker.com/settings/security)
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      # Day 26: add real tests later, e.g. with jest or node --test
+      - name: Run tests
+        run: echo "No tests yet — add npm test here on Day 26"
+
+  build-and-push:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/30-days-app:latest

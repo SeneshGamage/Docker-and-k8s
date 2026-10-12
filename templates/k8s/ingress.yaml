@@ -1,0 +1,21 @@
+# --- Day 28 template (optional): move to k8s/ingress.yaml ---
+# Requires an ingress controller, e.g.: minikube addons enable ingress
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: thirty-days-app.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-service
+                port:
+                  number: 80

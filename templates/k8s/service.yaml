@@ -1,0 +1,16 @@
+# --- Day 16 template: move to k8s/service.yaml ---
+# Day 16: start with ClusterIP (internal only)
+# Day 17: change "type" to NodePort to access from your browser via
+#         minikube service app-service
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+spec:
+  selector:
+    app: thirty-days-app
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 3000
