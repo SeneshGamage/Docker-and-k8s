@@ -87,3 +87,12 @@ docker compose down
 Check the database connection at `http://localhost:3000/db`.
 
 Visit `http://localhost:3000/visits` to see a counter stored in Postgres. The data lives in the `db_data` volume and survives `docker compose down`. Use `docker compose down -v` to wipe it.
+
+## Setup
+Create your own environment file before running with Docker Compose:
+
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` and set your own values. The `.env` file is ignored by git and must never be committed.

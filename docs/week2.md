@@ -107,3 +107,18 @@ docker compose up -d
 - The `COUNT(*)` query confirms data persistence across container restarts.
 - Health checks in `docker compose ps` indicate the readiness of services.
 
+## Day 12: .env file and secrets handling
+
+- Moved the database credentials out of `docker-compose.yml` into a `.env` file
+- Committed `.env.example` with placeholder values; `.env` stays out of git
+- Used `${VARIABLE}` substitution in the compose file and checked it with `docker compose config`
+
+What I learned:
+- Compose automatically reads `.env` and substitutes `${VAR}` in `docker-compose.yml`; `${VAR:-default}` supplies a fallback
+- Secrets must never be committed, because git history keeps them forever, even if the file is deleted later
+- `.env.example` documents which variables are needed without exposing real values
+- `.env` is listed in both `.gitignore` (keeps it out of git) and `.dockerignore` (keeps it out of images)
+- Postgres only reads its password when it first creates the database, so changing it later needs a volume reset (`down -v`) or a password change inside Postgres
+- Passwords containing symbols can break a connection URL, so they need URL-encoding
+- This is fine for local development; real deployments use a secrets manager (Kubernetes Secrets come in Week 3)
+
