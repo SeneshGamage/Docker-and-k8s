@@ -4,7 +4,7 @@ const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
   res.json({
-    message: 'Hello from the 30 Days of Docker + Kubernetes project!',
+    message: process.env.APP_MESSAGE || 'Hello from the 30 Days of Docker + Kubernetes project!',
     hostname: require('os').hostname(),
     timestamp: new Date().toISOString(),
   });

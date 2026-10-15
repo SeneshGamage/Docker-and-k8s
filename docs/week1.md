@@ -122,7 +122,15 @@ What I learned:
 
 ## Day 5: Environment variables
 
-_To be filled in._
+- Made the greeting configurable with `APP_MESSAGE`
+- Passed variables with `-e` and `--env-file`, and checked them with `docker exec ... printenv`
+- Changed `PORT` and learned the `-p` mapping must match it
+
+What I learned:
+- Environment variables let me change behaviour without rebuilding the image
+- `ENV` in the Dockerfile sets defaults; `-e` at run time overrides them
+- `.env` files keep config out of the image and out of git (never commit real secrets)
+- The healthcheck is hardcoded to port 3000, so it reports unhealthy when `PORT` changes (to fix on Day 6)
 
 ## Day 6: Healthcheck
 
