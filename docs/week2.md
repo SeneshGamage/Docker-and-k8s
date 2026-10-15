@@ -193,4 +193,56 @@ docker compose exec app printenv NODE_ENV
 - Switched to **Compose Watch** (`develop.watch` with `sync+restart`), which copies changed files in and restarts the service, and works on Windows
 - `docker compose up --watch` starts the stack and watches; `rebuild` rules rebuild the image when `package.json` changes
 
+## Week 2 summary
+
+### What I built this week
+The Week 1 app now runs as a small multi-container system with Docker Compose:
+- `app` (Node.js) and `db` (Postgres 16) start together with `docker compose up`
+- The app talks to the database by service name using `DATABASE_URL`
+- Data persists in a named volume (`db_data`)
+- Credentials live in `.env` (ignored by git), with `.env.example` committed
+- A `docker-compose.override.yml` mounts the code and restarts the app on changes for local development
+
+### Key concepts
+| Concept | In my own words |
+|---|---|
+| Docker Compose | A tool to define and run multi-container applications with a single file and command. |
+| Service | A container configuration in Compose that represents one part of the app (e.g., app, db). |
+| Compose network and service names | A private network where services communicate using their names instead of IPs. |
+| Volume | Persistent storage managed by Docker to save data outside the container's lifecycle. |
+| Bind mount | A direct link between a host folder and a container folder for live file sharing. |
+| `.env` file and `.env.example` | `.env` stores sensitive variables locally; `.env.example` documents required variables. |
+| Override file | A secondary Compose file for development-specific settings like live code updates. |
+
+### Commands I now know
+| Command | What it does |
+|---|---|
+| `docker compose up --build -d` | Builds and starts all services in the background |
+| `docker compose ps` | Lists the project's containers |
+| `docker compose logs -f app` | Follows one service's logs |
+| `docker compose exec db psql ...` | Runs a command inside a running service |
+| `docker compose config` | Shows the final merged configuration |
+| `docker compose down` | Removes containers and the network, keeps volumes |
+| `docker compose down -v` | Also deletes volumes (data loss!) |
+| `docker volume ls` / `inspect` | Lists / shows details of volumes |
+
+### Problems I hit and how I fixed them
+- Docker engine crashes: check `wsl_error.md`
+- _password authentication / port conflicts: none
+
+### What surprised me
+- The `depends_on` limitation: I expected it to wait for the database to be ready, but it only controls start order. I learned to handle this in the app code instead.
+- Persisting data with volumes was straightforward and reliable.
+- `.env` file integration was seamless; Compose automatically substituted variables.
+- Live reload on Windows had challenges, but Compose Watch resolved them.
+- Override files made switching between development and production configurations simple.
+- Compose's private networks and service discovery worked flawlessly.
+- Debugging with `docker compose exec` was intuitive and effective.
+
+### What I'd like to understand better
+- How to handle database readiness in the app code when `depends_on` doesn't wait for the database to be ready.
+- Best practices for managing secrets securely in production environments beyond `.env` files.
+
+### Next week
+Kubernetes with Minikube: running the same app on a local cluster.
 

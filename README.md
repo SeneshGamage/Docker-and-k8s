@@ -108,3 +108,23 @@ docker compose -f docker-compose.yml up --build
 - `node --watch` with a bind mount did not restart the app on Windows, because file-change events don't cross from the Windows drive into the Linux container (the file did arrive; `grep` inside the container proved it)
 - Switched to **Compose Watch** (`develop.watch` with `sync+restart`), which copies changed files in and restarts the service, and works on Windows
 - `docker compose up --watch` starts the stack and watches; `rebuild` rules rebuild the image when `package.json` changes
+
+## Architecture
+
+```mermaid
+flowchart LR
+    user([Browser]) -->|localhost:3000| app
+    subgraph compose[Docker Compose network]
+        app["app<br/>Node.js + Express"]
+        db[("db<br/>Postgres 16")]
+        app -->|"DATABASE_URL (host: db)"| db
+    end
+    db --- vol[("db_data volume")]
+    env[".env file"] -.->|variables| app
+    env -.->|variables| db
+```
+
+- **app** is built from the `Dockerfile` and serves `/`, `/health`, `/db` and `/visits`
+- **db** is the official Postgres image; its data lives in the `db_data` volume
+- Containers reach each other by service name on Compose's private network
+- Configuration comes from `.env` (not committed; see `.env.example`)
