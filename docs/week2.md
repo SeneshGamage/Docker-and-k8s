@@ -68,3 +68,42 @@ What I learned:
 - `docker volume ls` and `docker volume inspect` show what exists and where
 - Volumes are how databases, uploads and other stateful data are kept in containers (and Kubernetes uses the same idea with PersistentVolumeClaims in Week 3)
 
+### Commands and Observations
+
+#### Commands Used:
+
+```bash
+# Check running services
+docker compose ps
+
+# Query the database
+docker compose exec db psql -U postgres -d appdb -c "SELECT COUNT(*) FROM visits;"
+
+# List volumes
+docker volume ls
+
+# Inspect a specific volume
+docker volume inspect 30-days-docker-k8s_db_data
+
+# Stop and remove containers, networks, and volumes
+docker compose down
+docker compose down -v
+
+# Start services
+docker compose up -d
+```
+
+#### Observations:
+
+- `docker compose ps` shows the status of services, including health checks.
+- `docker compose exec` allows running commands inside a container, such as querying the database.
+- Volumes persist data even after `docker compose down`, unless `-v` is used to remove them.
+- `docker volume inspect` reveals details like mount points and labels.
+- `docker compose up -d` recreates containers and networks, and restores volumes if they exist.
+- Use `docker compose down -v` cautiously, as it permanently deletes volumes and their data.
+- Named volumes like `30-days-docker-k8s_db_data` are essential for persisting stateful data.
+- Services communicate over a private network created by Compose, and volumes are automatically reattached when services are restarted.
+- Always verify the state of services and volumes after running `down` or `up` commands.
+- The `COUNT(*)` query confirms data persistence across container restarts.
+- Health checks in `docker compose ps` indicate the readiness of services.
+
