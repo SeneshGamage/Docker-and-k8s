@@ -33,6 +33,19 @@ app.get('/db', async (req, res) => {
   }
 });
 
+app.get('/visits', async (req, res) => {
+  try {
+    await pool.query(
+      'CREATE TABLE IF NOT EXISTS visits (id SERIAL PRIMARY KEY, visited_at TIMESTAMPTZ DEFAULT NOW())'
+    );
+    await pool.query('INSERT INTO visits DEFAULT VALUES');
+    const result = await pool.query('SELECT COUNT(*) AS total FROM visits');
+    res.json({ total_visits: Number(result.rows[0].total) });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });

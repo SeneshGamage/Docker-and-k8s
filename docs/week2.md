@@ -53,3 +53,18 @@ Non-authoritative answer:
 - `localhost` inside a container means that container itself, not my PC or another container
 - `depends_on` only controls start order; it doesn't wait until the database is ready, so apps should handle a database that isn't up yet
 - `npm ci` needs `package-lock.json` to match `package.json`, so I run `npm install` locally when adding a dependency
+
+## Day 10: Persistent volume
+
+- Added a `/visits` route that stores a row in Postgres on every visit
+- Ran `docker compose down` and `up` and confirmed the visit count continued
+- Ran `docker compose down -v` and confirmed the data was deleted
+
+What I learned:
+- A container's own filesystem is temporary: when the container is removed, its data goes with it
+- A **volume** is storage managed by Docker that lives outside the container, so data survives removal and re-creation
+- In Compose, `db_data:/var/lib/postgresql/data` connects the named volume to the folder where Postgres keeps its files
+- `docker compose down` keeps volumes; `docker compose down -v` deletes them, so use `-v` carefully
+- `docker volume ls` and `docker volume inspect` show what exists and where
+- Volumes are how databases, uploads and other stateful data are kept in containers (and Kubernetes uses the same idea with PersistentVolumeClaims in Week 3)
+

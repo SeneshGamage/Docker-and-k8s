@@ -85,3 +85,5 @@ Stop and remove the containers:
 docker compose down
 ```
 Check the database connection at `http://localhost:3000/db`.
+
+Visit `http://localhost:3000/visits` to see a counter stored in Postgres. The data lives in the `db_data` volume and survives `docker compose down`. Use `docker compose down -v` to wipe it.
