@@ -13,3 +13,43 @@ What I learned:
 - The Postgres image creates the user and database from its `POSTGRES_*` variables on first start
 - `docker compose down` removes containers and the network but keeps named volumes
 - `depends_on` controls start order only; it doesn't wait for the database to be ready (to handle on Day 9)
+
+## Day 9: App and database talking
+
+- Installed the `pg` library and added a `/db` route that runs a query
+- The app reads the connection string from `DATABASE_URL`
+- Verified the connection at `/db`, then stopped and restarted the `db` service to see the failure and recovery
+
+### Debugging the database connection
+
+#### Commands used:
+
+```bash
+PS D:\30-days-docker-k8s> docker compose stop db
+[+] Stopping 1/1
+ ✔ Container 30-days-docker-k8s-db-1  Stopped                                                                                               0.2s 
+PS D:\30-days-docker-k8s> docker compose start db
+[+] Running 1/1
+ ✔ Container 30-days-docker-k8s-db-1  Started                                                                                               0.3s 
+PS D:\30-days-docker-k8s> docker compose exec app nslookup db
+Server:         127.0.0.11
+Address:        127.0.0.11:53
+
+Non-authoritative answer:
+Name:   db
+Address: 172.19.0.2
+
+Non-authoritative answer:
+```
+
+#### What I learned:
+- `docker compose stop <service>` stops a specific service without affecting others.
+- `docker compose start <service>` restarts a stopped service without rebuilding it.
+- `docker compose exec <service> <command>` runs a command inside a running container.
+- The `nslookup` command can verify DNS resolution within the Compose network.
+- Compose assigns a unique IP to each service, but services communicate using their names, not IPs.
+- Containers in one Compose project share a private network and reach each other by service name (`db`)
+- `DATABASE_URL` is `postgres://user:password@host:port/database`; the host is the service name
+- `localhost` inside a container means that container itself, not my PC or another container
+- `depends_on` only controls start order; it doesn't wait until the database is ready, so apps should handle a database that isn't up yet
+- `npm ci` needs `package-lock.json` to match `package.json`, so I run `npm install` locally when adding a dependency

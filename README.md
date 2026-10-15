@@ -84,3 +84,4 @@ Stop and remove the containers:
 ```bash
 docker compose down
 ```
+Check the database connection at `http://localhost:3000/db`.
