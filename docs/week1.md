@@ -134,7 +134,34 @@ What I learned:
 
 ## Day 6: Healthcheck
 
-_To be filled in._
+- Fixed the `HEALTHCHECK` so it uses `${PORT}` instead of a hardcoded 3000
+- Tuned `--interval`, `--timeout`, `--start-period` and `--retries`
+- Confirmed the status with `docker ps` and `docker inspect`
+- Forced an unhealthy state with `--health-cmd="exit 1"` to see it fail
+
+- PS D:\30-days-docker-k8s> docker run -d -p 5000:5000 -e PORT=5000 --name health-port 30-days-app
+- b0115c4e3da02ced0783039a9bebe7aa3f595bf5779329820ef3ec711e1c5f1a
+- PS D:\30-days-docker-k8s> docker ps
+- CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS                    PORTS                           
+- NAMES 
+- b0115c4e3da0   30-days-app   "docker-entrypoint.s…"   24 seconds ago   Up 24 seconds (healthy)   3000/tcp, 0.0.0.0:5000->5000/tcp   - health-port
+- PS D:\30-days-docker-k8s> docker run -d --name sick-test --health-cmd="exit 1" --health-interval=5s --health-retries=2 30-days-app
+- eef0f13f0cca50bb5cc6259d2bd5f85d771cfb012579978a57c47d43ea79444b
+- PS D:\30-days-docker-k8s> docker ps
+- CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS                           PORTS                              NAMES
+eef0f13f0cca   30-days-app   "docker-entrypoint.s…"   3 seconds ago    `Up 3 seconds (health: starting)`   3000/tcp                           `sick-test`
+b0115c4e3da0   30-days-app   "docker-entrypoint.s…"   46 seconds ago   Up 46 seconds (healthy)           3000/tcp, 0.0.0.0:5000->5000/tcp   health-port        
+PS D:\30-days-docker-k8s> docker ps
+CONTAINER ID   IMAGE         COMMAND                  CREATED              STATUS                        PORTS                              NAMES
+eef0f13f0cca   30-days-app   "docker-entrypoint.s…"   23 seconds ago       `Up 22 seconds (unhealthy)`    3000/tcp                           `sick-test`
+b0115c4e3da0   30-days-app   "docker-entrypoint.s…"   About a minute ago   Up About a minute (healthy)   3000/tcp, 0.0.0.0:5000->5000/tcp   health-port 
+
+What I learned:
+- A healthcheck is a command Docker runs inside the container on a schedule; exit code 0 = healthy, 1 = unhealthy
+- Status goes `starting` → `healthy` or `unhealthy`; `start-period` gives the app time to boot
+- `docker ps` shows the status, and `docker inspect` shows the full check history
+- Docker only *reports* unhealthy containers, it doesn't restart them. Kubernetes probes (Week 3-4) act on this idea
+- The app's `/health` endpoint is what the check calls
 
 ## Day 7: Week 1 summary
 
