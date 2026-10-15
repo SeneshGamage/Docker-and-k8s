@@ -31,6 +31,16 @@ docker build -t 30-days-app .
 docker run -p 3000:3000 30-days-app
 ```
 
+## Docker Hub
+The image is published at `donlenasenesh/30-days-app`.
+
+Pull and run it:
+
+```bash
+docker pull YOUR_DOCKERHUB_USERNAME/30-days-app:latest
+docker run -p 3000:3000 YOUR_DOCKERHUB_USERNAME/30-days-app:latest
+```
+
 ## Progress log
 See `docs/week1.md`, `docs/week2.md`, `docs/week3.md`, `docs/week4.md` as they
 get filled in throughout the month, plus `docs/retrospective.md` at the end.
@@ -46,3 +56,19 @@ Files in `templates/` are **not part of the live app yet** — they're staged
 for later days so you don't accidentally commit Week 3/4 content on Day 1.
 Move each file into place on its scheduled day per the roadmap, per the
 comment at the top of each file.
+
+
+## Additional
+
+## Configuration
+The app is configured with environment variables:
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `PORT` | `3000` | Port the app listens on |
+| `APP_MESSAGE` | `Hello from the 30 Days of Docker + Kubernetes project!` | Greeting returned by `GET /` |
+
+```bash
+docker run -p 3000:3000 -e APP_MESSAGE="Hello!" 30-days-app
+docker run -p 3000:3000 --env-file .env 30-days-app
+```

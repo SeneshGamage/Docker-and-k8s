@@ -1,0 +1,51 @@
+# --- Day 15 template: move to k8s/deployment.yaml ---
+# Before applying: docker build -t yourdockerhubuser/30-days-app:latest .
+#                   docker push yourdockerhubuser/30-days-app:latest
+# Then: kubectl apply -f k8s/deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+  labels:
+    app: thirty-days-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thirty-days-app
+  template:
+    metadata:
+      labels:
+        app: thirty-days-app
+    spec:
+      containers:
+        - name: app
+          image: yourdockerhubuser/30-days-app:latest
+          ports:
+            - containerPort: 3000
+          # Day 18: values pulled from a ConfigMap
+          envFrom:
+            - configMapRef:
+                name: app-config
+          # Day 23: resource requests/limits
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"
+          # Day 24: probes
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5

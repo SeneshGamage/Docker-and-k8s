@@ -1,0 +1,12 @@
+# --- Day 13 template: move this to the repo root ---
+# docker compose automatically merges this with docker-compose.yml for local dev.
+# It mounts your source code live and enables auto-restart on changes.
+
+services:
+  app:
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: node index.js
+    environment:
+      - NODE_ENV=development
