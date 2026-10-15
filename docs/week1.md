@@ -165,4 +165,58 @@ What I learned:
 
 ## Day 7: Week 1 summary
 
-_To be filled in._
+### What I built this week
+A Node.js/Express app packaged as a Docker image that:
+- builds from a Dockerfile on `node:20-alpine` (140MB)
+- is configured through environment variables (`PORT`, `APP_MESSAGE`)
+- reports its health through a `HEALTHCHECK` that follows `PORT`
+- is published on Docker Hub as `donlenasenesh/30-days-app`
+
+### Key concepts
+| Concept | In my own words |
+|---|---|
+| Image | A packaged snapshot of an app, its dependencies, and the OS layer, ready to be run. |
+| Container | A running instance of an image, isolated and lightweight. |
+| Dockerfile | A script with instructions to build a Docker image. |
+| Registry (Docker Hub) | A storage for Docker images, allowing sharing and pulling from anywhere. |
+| Layer caching | Docker's way of reusing unchanged layers to speed up builds. |
+| Environment variable | A key-value pair used to configure an app without changing its code. |
+| Healthcheck | A periodic test to check if a container is running as expected. |
+
+### Commands I now know
+| Command | What it does |
+|---|---|
+| `docker build -t name .` | Builds an image from the Dockerfile |
+| `docker run -d -p H:C --name n image` | Runs a container in the background with a port mapping |
+| `docker ps` / `docker ps -a` | Lists running / all containers |
+| `docker logs name` | Shows a container's output |
+| `docker exec name cmd` | Runs a command inside a running container |
+| `docker stop` / `docker rm` | Stops / deletes a container |
+| `docker images` / `docker rmi` | Lists / deletes images |
+| `docker tag` / `docker push` | Names an image for a registry / uploads it |
+| `docker inspect` | Shows detailed info, including health history |
+
+### Problems I hit and how I fixed them
+
+- **Docker Desktop engine errors**: Every command failed with an `Internal Server Error` for the `dockerDesktopLinuxEngine` pipe. I fixed this by restarting Docker Desktop and running `wsl --shutdown`. After that, I waited for "Engine running" before using Docker.
+
+- **Port 3000 already allocated**: The app failed to start because another process was using port 3000. I identified the conflicting process using `netstat -ano | findstr :3000` and stopped it. Alternatively, I ran the container on a different port using `-p 4000:3000`.
+
+### What surprised me
+- How much faster rebuilds became with Docker's layer caching.
+- How easy it was to push and pull images from Docker Hub.
+- How environment variables made the app flexible without changing the code.
+- How the healthcheck status updates dynamically in `docker ps`.
+- That Alpine Linux is so small yet functional for Node.js apps.
+- How Docker's CLI commands are intuitive once you understand the concepts.
+
+### What I'd like to understand better
+
+- How multi-stage builds can optimize image size further.
+- Best practices for writing efficient Dockerfiles.
+- Advanced healthcheck configurations and their use cases.
+- How Docker handles networking between containers.
+
+
+### Next week
+Docker Compose: running the app together with a database.
