@@ -122,3 +122,75 @@ What I learned:
 - Passwords containing symbols can break a connection URL, so they need URL-encoding
 - This is fine for local development; real deployments use a secrets manager (Kubernetes Secrets come in Week 3)
 
+## Day 13: Compose override for local development
+
+- Added `docker-compose.override.yml` that mounts the code and runs `node --watch`
+- Edited `index.js` while the container was running and saw the app restart with no rebuild
+- Ran with `-f docker-compose.yml` to skip the override and compared the "production" behaviour
+
+What I learned:
+- Compose automatically merges `docker-compose.override.yml` on top of `docker-compose.yml`; `-f` picks specific files instead
+- A **bind mount** (`.:/app`) shares a host folder with the container, so edits appear instantly
+- The extra `/app/node_modules` volume stops the host folder from hiding the dependencies installed in the image
+- Merge rules: lists such as `volumes` and `environment` are combined, while `command` is replaced
+- If I add a new npm package, I need a rebuild (`docker compose up --build -V`) so the `node_modules` volume refreshes
+- Development wants speed (live code, restarts); production wants the code baked into an immutable image
+- `docker compose config` shows exactly what Compose will run after merging
+### Commands and Observations
+
+#### Commands Used:
+
+```bash
+# Check environment variable in the app container
+docker compose exec app grep environment index.js
+
+# Restart the app service
+docker compose restart app
+
+# Build and watch for changes
+docker compose up --build --watch
+
+```
+bash
+# Build and watch for changes
+docker compose up --build --watch
+[+] Building 2.0s (12/12) FINISHED                                                                                                      0.0s 
+[+] Running 2/2
+ ✔ Container 30-days-docker-k8s-db-1   Running                                                                                              0.0s 
+ ✔ Container 30-days-docker-k8s-app-1  Recreated                                                                                            0.3s 
+Attaching to app-1, db-1
+    ⦿ Watch enabled
+app-1   | App listening on port 3000
+    ⦿ Syncing "app" after changes were detected
+[+] Restarting 1/1
+ ✔ Container 30-days-docker-k8s-app-1  Started                                                                                             10.7s 
+    ⦿ Syncing "app" after changes were detected
+app-1 exited with code 0
+app-1   | App listening on port 3000
+```
+
+# Stop all services gracefully
+docker compose down
+
+# Start services with a specific compose file
+docker compose -f docker-compose.yml up --build -d
+
+# Check NODE_ENV environment variable
+docker compose exec app printenv NODE_ENV
+```
+
+#### Observations:
+
+- `docker compose exec` runs commands inside a running container, useful for debugging.
+- `docker compose restart` restarts a specific service without rebuilding.
+- `docker compose up --build --watch` rebuilds the app and watches for changes, enabling live updates.
+- `docker compose down` stops and removes containers, networks, and other resources.
+- Using `-f` allows specifying a particular compose file for starting services.
+- Environment variables like `NODE_ENV` can be checked inside containers using `printenv`.
+- Live reload (`--watch`) is helpful during development for syncing changes without manual restarts.
+- Graceful stopping ensures all services are properly shut down before removal.
+- `node --watch` with a bind mount did not restart the app on Windows, because file-change events don't cross from the Windows drive into the Linux container (the file did arrive; `grep` inside the container proved it)
+- Switched to **Compose Watch** (`develop.watch` with `sync+restart`), which copies changed files in and restarts the service, and works on Windows
+- `docker compose up --watch` starts the stack and watches; `rebuild` rules rebuild the image when `package.json` changes
+
+

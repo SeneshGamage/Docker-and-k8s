@@ -1,0 +1,19 @@
+# Local development settings. Compose merges this file automatically
+# with docker-compose.yml when you run `docker compose up`.
+
+services:
+  app:
+    environment:
+      - NODE_ENV=development
+      - APP_VERSION=1.0.0
+    develop:
+      watch:
+        # Copy changed code into the container and restart the app
+        - action: sync+restart
+          path: ./index.js
+          target: /app/index.js
+        # Rebuild the image when dependencies change
+        - action: rebuild
+          path: ./package.json
+        - action: rebuild
+          path: ./package-lock.json

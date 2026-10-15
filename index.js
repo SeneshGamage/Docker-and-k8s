@@ -1,4 +1,5 @@
 const express = require('express');
+const { version } = require('os');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -11,6 +12,8 @@ pool.on('error', (err) => console.error('Database error:', err.message));
 app.get('/', (req, res) => {
   res.json({
     message: process.env.APP_MESSAGE || 'Hello from the 30 Days of Docker + Kubernetes project!',
+    environment: process.env.NODE_ENV || 'production',
+    version: process.env.APP_VERSION || '1.0.0',
     hostname: require('os').hostname(),
     timestamp: new Date().toISOString(),
   });

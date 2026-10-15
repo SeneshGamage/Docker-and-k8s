@@ -96,3 +96,15 @@ cp .env.example .env
 ```
 
 Then edit `.env` and set your own values. The `.env` file is ignored by git and must never be committed.
+
+## Local development
+`docker compose up` automatically applies `docker-compose.override.yml`, which mounts the source code and restarts the app when files change.
+
+To run without the override (closer to production):
+
+```bash
+docker compose -f docker-compose.yml up --build
+```
+- `node --watch` with a bind mount did not restart the app on Windows, because file-change events don't cross from the Windows drive into the Linux container (the file did arrive; `grep` inside the container proved it)
+- Switched to **Compose Watch** (`develop.watch` with `sync+restart`), which copies changed files in and restarts the service, and works on Windows
+- `docker compose up --watch` starts the stack and watches; `rebuild` rules rebuild the image when `package.json` changes
