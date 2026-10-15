@@ -72,3 +72,15 @@ The app is configured with environment variables:
 docker run -p 3000:3000 -e APP_MESSAGE="Hello!" 30-days-app
 docker run -p 3000:3000 --env-file .env 30-days-app
 ```
+## Running with Docker Compose
+Starts the app and a Postgres database together:
+
+```bash
+docker compose up --build
+```
+
+Stop and remove the containers:
+
+```bash
+docker compose down
+```
